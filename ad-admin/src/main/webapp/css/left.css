@@ -1,0 +1,139 @@
+body {
+	font-family: arial, 宋体, serif;
+	font-size: 12px;
+	border-right: 1px #C3D5E3 solid;
+	background-color: #fff;
+}
+
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+#nav {
+	width: 182px;
+	line-height: 30px;
+	list-style-type: none;
+	text-align: left;
+	border: 1px #C3D5E3 solid;
+	/*定义整个ul菜单的行高和背景色*/
+}
+
+/*==================一级目录===================*/
+#nav a {
+	width: 180px;
+	display: block;
+	padding-left: 30px;
+	/*Width(一定要)，否则下面的Li会变形*/
+}
+
+#nav li {
+	border-bottom: #FFF 0px solid; /*下面的一条白边*/
+	float: left;
+	color: #DD1336;
+	font-weight: bold;
+	background: url(../images/admin/left_nav.gif);
+}
+
+#nav li a:hover {
+	
+}
+
+#nav a:link {
+	color: #134C81;
+	text-decoration: none;
+}
+
+#nav a:visited {
+	color: #134C81;
+	text-decoration: none;
+}
+
+#nav a:hover {
+	color: #DD1336;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+/*==================二级目录===================*/
+#nav li ul {
+	list-style: none;
+	padding-top: 0px;
+	border-bottom: #134C81 0px solid;
+	text-align: left;
+	background-color: #fff;
+}
+
+#nav li ul li {
+	font-weight: normal;
+	height: 27px;
+	line-height: 27px;
+	background: url(../images/admin/list.gif) no-repeat;
+}
+
+#nav li ul a {
+	padding-left: 40px;
+	background: url(../images/admin/list.gif) no-repeat;
+	background-color: #FFFFFF;
+}
+
+/* padding-left二级目录中文字向右移动，但Width必须重新设置=(总宽度-padding-left)*/
+	/*下面是二级目录的链接样式*/
+#nav li ul a:link {
+	color: #666;
+	text-decoration: none;
+}
+
+#nav li ul a:visited {
+	color: #666;
+	text-decoration: none;
+}
+
+#nav li ul a:hover {
+	color: #CC0000;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+/*==============================*/
+#nav li:hover ul {
+	left: auto;
+}
+
+#nav li.sfhover ul {
+	left: auto;
+}
+
+#content {
+	clear: left;
+}
+
+#nav ul.collapsed {
+	display: none;
+}
+
+.lefttop {
+	margin-left: 0px;
+	width: 182px;
+	height: 30px;
+	margin-left: 0px;
+}
+
+.left {
+	margin-left: 0px;
+	width: 182px;
+	margin-left: 0px;
+}
+
+.clearfix:after {
+	content: ".";
+	height: 0;
+	display: block;
+	visibility: hidden;
+	clear: both
+}
+
+.clearfix {
+	-height: 1%; *
+	min-height: 1%;
+}

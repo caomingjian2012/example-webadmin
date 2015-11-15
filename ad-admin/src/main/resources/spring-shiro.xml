@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"
+	default-lazy-init="true">
+
+	
+
+	<!-- Shiro's main business-tier object for web-enabled applications -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="shiroDbRealm" />
+		<property name="cacheManager" ref="cacheManager" /> 
+		<property name="sessionManager" ref="defaultWebSessionManager"></property>
+	</bean>
+
+	<bean id="hashedCredentialsMatcher"
+		class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+		<property name="hashAlgorithmName" value="MD5" />
+		<property name="storedCredentialsHexEncoded" value="true" />
+		<property name="hashIterations" value="1" />
+	</bean>
+	<!-- 項目自定义的Realm, 所有accountService依赖的dao都需要用depends-on声明 -->
+	<bean id="shiroDbRealm" class="com.common.plugins.shiro.ShiroDbRealm">
+		<property name="dataSource" ref="dataSource" />
+		<property name="authenticationQuery"
+			value="select u.password from palmcms_acl_user u where u.username = ? " />
+		<property name="userRolesQuery"
+			value="select r.name from palmcms_acl_user u  left join palmcms_acl_user_role ur on u.id =ur.u_id left join palmcms_acl_role  r on ur.role_id = r.id  where u.username = ? " />
+		<property name="permissionsQuery"
+			value="SELECT  p.permission FROM palmcms_acl_role r LEFT JOIN palmcms_acl_role_permission rp ON r.id = rp.role_id LEFT JOIN palmcms_acl_permission p ON rp.permission_id = p.id WHERE r.name = ?" />
+		<property name="permissionsLookupEnabled" value="true" />
+		<property name="saltStyle" value="NO_SALT" />
+		 <property name="credentialsMatcher" ref="hashedCredentialsMatcher" />
+	</bean>
+	 
+	<!-- Shiro Filter -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/login.jsp" />
+		<property name="successUrl" value="/welcome" />
+		<property name="unauthorizedUrl" value="/login.jsp" />
+		<property name="filterChainDefinitions">
+			<value>
+				
+				/login = anon
+				/static/** = anon
+				/api/** = anon
+				/register/** = anon
+				/login* = anon
+				/tmp/** = anon
+				/icon/** = anon
+				/png/** = anon
+				
+				
+			
+				/apiservice/** = anon
+				
+				
+				
+				/images/** = anon
+				/*.css = anon
+				/*.js = anon
+				/*.gif = anon
+				/*.jpg = anon
+				/*.png = anon
+				/log4j.jsp = anon
+				/abcd.jsp = anon
+				/404.jsp = anon
+				
+				/logout = logout
+				
+				
+				/** = authc
+			</value>
+		</property>
+	</bean>
+	
+
+	<!-- session共享 -->
+	<bean id="defaultWebSessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+	    <property name="globalSessionTimeout" value="18000000" />
+	     <property name="sessionDAO" ref="redisSessionDAO" />
+	</bean>
+	
+	<bean id="redisSessionDAO" class="com.common.plugins.shiro.RedisSessionDAO">
+		<property name="redisManager" >
+		    <bean class="com.common.plugins.jedis.RedisManager">
+				<property name="host" value="${redis.host}"></property>
+				<property name="dbindex" value="13"></property>
+			</bean>		    
+		</property>
+	</bean>
+	
+	<!-- cache共享 -->
+	<bean id="cacheManager" class="com.common.plugins.shiro.RedisCacheManager">
+      	<property name="redisManager" >
+      	    	<bean  class="com.common.plugins.jedis.RedisManager">
+				<property name="host" value="${redis.host}"></property>
+				<property name="dbindex" value="13"></property>
+				</bean>     	    
+      	</property>
+      	
+	</bean>
+	
+	
+
+	
+	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+	
+		
+</beans>

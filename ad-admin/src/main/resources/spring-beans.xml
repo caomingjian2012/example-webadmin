@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:cache="http://www.springframework.org/schema/cache" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+
+
+<bean name="uploadController" class="com.palmtech.ad.web.UploadController">
+		<property name="DISKPATH" value="${upload.diskpath}"></property> 
+		<property name="URLPATH" value="${upload.urlpath}"></property>
+		
+		
+	</bean>
+
+	
+
+
+</beans>

@@ -1,0 +1,63 @@
+
+body {
+  /*background-color: #3d3d3d !important;*/
+}
+/* 结构 */
+/*
+page-header-fixed
+{
+	page-header
+	page-container
+	page-footer
+}
+*/
+
+/***
+Page container
+***/
+.page-container {
+  margin: 0px;
+  padding: 0px;
+}
+.page-header-fixed .page-linebar {
+  background-color: #bdd9ea;  
+  height: 31px;
+}
+.page-header-fixed .page-container {
+  margin-top: 0px;  
+}
+
+.header {
+  width: 100%; 
+  padding: 0 20px 0 20px;
+  margin: 0;
+  border: 0px;
+  padding: 0px; 
+  box-shadow: none;
+  height: 42px; 
+  min-height: 42px;
+  
+   filter: none !important;
+  background-image: none !important;
+  background-color: #212121 !important;
+}
+
+.page-sidebar {
+  position: absolute;
+  width: 225px;
+  	/* background-color: #3d3d3d;*/
+  background-color: #fff;
+}
+
+.page-content { 
+    padding: 20px;
+    margin-left: 20px; 
+    margin-top: 0px;
+    min-height: 760px;
+}
+
+.footer .footer-inner {
+  color: #999999;
+}
+
+

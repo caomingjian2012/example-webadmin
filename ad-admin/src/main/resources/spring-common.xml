@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	 xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	 xmlns:cache="http://www.springframework.org/schema/cache" 
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		 http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.2.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd"
+		
+		default-lazy-init="false">
+	<context:component-scan base-package="com.palmtech">
+	</context:component-scan>
+	<context:component-scan base-package="com.common.plugins.myframework">
+	</context:component-scan>
+	<context:annotation-config />
+	<!-- CACHE CONFIG -->
+	
+    
+	<bean id ="redisManager"  class="com.common.plugins.jedis.RedisManager" init-method="init" >
+				<property name="host" value="${redis.host}"></property>
+				<property name="dbindex" value="1"></property>
+				<property name="expire" value="180"></property>
+			</bean>
+
+	
+	<!-- end of cache config -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+			
+				<value>classpath*:config.properties</value>
+				
+			</list>
+		</property>
+	</bean>
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url">
+		    <value> <![CDATA[${jdbcUrl}]]> 
+		        </value>
+		</property>
+		<property name="username" value="${jdbcUsername}"></property>
+		<property name="password" value="${jdbcPassword}"></property>
+	</bean>
+	
+	<!-- 配置SessionFactory -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">false</prop>
+			</props>
+		</property>
+
+		
+		<property name="packagesToScan" value="com/palmtech/ad/entity"></property> 
+
+	</bean>
+	
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="xsqlBuilderFactory" class="com.common.plugins.rapidframework.XsqlBuilderFactory">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<!-- 配置一个事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<!-- 
+	注意的几点: 
+	1 @Transactional 只能被应用到public方法上, 对于其它非public的方法,如果标记了@Transactional也不会报错,但方法没有事务功能.
+	2 默认情况下,一个有事务方法, 遇到RuntimeException 时会回滚.遇到 受检查的异常 是不会回滚 的. 要想所有异常都回滚,
+	  要加上 @Transactional( rollbackFor={Exception.class,其它异常}) 
+	 -->
+	 <!-- 采用声明式事务注解,需要事务的方法声明注解 -->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" order="100"/>
+	
+	<bean id="logAspect" class="com.common.plugins.spring.aop.LogAspect"></bean>
+	    <aop:config>
+	        <aop:aspect ref="logAspect">
+	            <aop:around method="logProfilingTime" pointcut="execution(* com.palmtech.cms.manager.*.*(..))"/>	            
+	        </aop:aspect>	        
+	    </aop:config>
+
+	
+</beans>

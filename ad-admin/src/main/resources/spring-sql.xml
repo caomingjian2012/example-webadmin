@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:cache="http://www.springframework.org/schema/cache" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	
+    <bean class="com.common.plugins.myframework.ComplexSqlBean" init-method="init" >
+        <property name="listMap">
+        <list>
+          <ref bean="sqlMap"/>
+         
+          
+      </list>
+        </property>
+        
+    </bean>
+   
+   
+    
+    <bean id="sqlMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map>
+			
+				<entry key="userCpsDailySql" >
+			   <value><![CDATA[
+select t3.* ,IFNULL(t4.mobiles,0) AS mobiles,IFNULL(marketProfit,0) AS marketProfit  from 
+(
+select calendar,apk from 
+(
+select cdate as calendar from statis_calendar where 1 =1     /~ and cdate >= {calendarBegin} ~//~ and cdate <={calendarEnd} ~/     and  DATE_FORMAT(cdate,'%Y-%m-%d 00:00:00') = cdate 
+) as t1  join (
+select apk from user_apk join apk on apk.code = user_apk.apk where 1=1 /~ and  username ={username} ~/ and type ='cps' /~ and code ={apk} ~/
+) as t2
+) as t3
+left join adst.st_apk_daily as t4 on  t3.calendar = t4.calendar and t3.apk =t4.apkName
+left join  cps_profit as t5 on  t3.calendar = t5.calendar and t3.apk =t5.apk
+order by t3.calendar desc			 
+			  
+			     			
+			      ]]>
+				</value>
+			</entry>
+			
+			
+			</map>
+		</constructor-arg>
+	</bean>
+
+
+	
+
+
+</beans>

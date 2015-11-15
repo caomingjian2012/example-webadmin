@@ -1,0 +1,37 @@
+body{
+	background-color: #fafafa;
+	font-size: 12px;
+}
+.main{
+	padding: 10% 0 10% 0;
+}
+.main-title{
+	margin: 0 auto;
+	width: 500px;
+	padding: 5px 30px;
+}
+.main-content{
+	border: 1px solid #eee;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	margin: 0 auto;
+	width: 500px;
+	padding: 20px 30px;
+	background: #fff;
+	
+}
+
+.footer {
+	margin-top: 15px;
+	padding: 15px 0px 0px 0px;
+	font-size: 95%;
+	text-align: center;
+	/*
+	border-top: 2px solid #658A16;
+	*/
+	border-top: 2px solid #003366;
+}
+.footer-inner{
+	text-align: center;
+}
